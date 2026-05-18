@@ -9,6 +9,9 @@ public class CanvasForBoat
     private int? _canvasWidth;
     private int? _canvasHeight;
 
+    // Свойство для доступа к объекту
+    public DrawingBoat? DrawingBoat => _drawingBoat;
+
     public void SetPictureSize(int width, int height)
     {
         _canvasWidth = width;
@@ -35,19 +38,12 @@ public class CanvasForBoat
         int finalX = x;
         int finalY = y;
 
-        // Левая граница
         if (finalX < 0)
             finalX = 0;
-
-        // Правая граница
         if (finalX + _drawingBoat.BoatWidth > _canvasWidth.Value)
             finalX = _canvasWidth.Value - _drawingBoat.BoatWidth;
-
-        // Верхняя граница
         if (finalY < 0)
             finalY = 0;
-
-        // Нижняя граница
         if (finalY + _drawingBoat.BoatHeight > _canvasHeight.Value)
             finalY = _canvasHeight.Value - _drawingBoat.BoatHeight;
 

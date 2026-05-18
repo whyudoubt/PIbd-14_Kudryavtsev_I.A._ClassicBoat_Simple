@@ -9,6 +9,6 @@ internal static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
-        Application.Run(new FormBoat());  // ← измени на FormBoat
+        Application.Run(new FormBoat());
     }
 }

@@ -7,13 +7,12 @@ namespace ClassicBoat;
 // Класс, отвечающий за прорисовку и перемещение лодки
 public class DrawingBoat
 {
-    private EntityBoat? _entityBoat;
-    private int? _startPosX;
-    private int? _startPosY;
+    protected EntityBoat? _entityBoat;
+    protected int? _startPosX;
+    protected int? _startPosY;
 
-    // Размеры лодки (не более 150x150)
-    private readonly int _boatWidth = 100;
-    private readonly int _boatHeight = 40;
+    protected int _boatWidth = 100;
+    protected int _boatHeight = 40;
 
     public int BoatWidth => _boatWidth;
     public int BoatHeight => _boatHeight;
@@ -21,9 +20,29 @@ public class DrawingBoat
     public int? PosY => _startPosY;
     public double? BoatStep => _entityBoat?.Step;
 
-    public void Init(int speed, double weight, Color bodyColor)
+    // Конструктор для создания новой лодки (для второй лабы)
+    public DrawingBoat(int speed, double weight, Color bodyColor)
     {
         _entityBoat = new EntityBoat();
+        _entityBoat.Init(speed, weight, bodyColor);
+        _startPosX = null;
+        _startPosY = null;
+    }
+
+    // Конструктор для наследников (позволяет менять размеры)
+    protected DrawingBoat(int boatWidth, int boatHeight)
+    {
+        _boatWidth = boatWidth;
+        _boatHeight = boatHeight;
+        _startPosX = null;
+        _startPosY = null;
+    }
+
+    // Старый метод Init (для совместимости с первой лабой)
+    public void Init(int speed, double weight, Color bodyColor)
+    {
+        if (_entityBoat == null)
+            _entityBoat = new EntityBoat();
         _entityBoat.Init(speed, weight, bodyColor);
         _startPosX = null;
         _startPosY = null;
@@ -59,9 +78,10 @@ public class DrawingBoat
         _startPosY += (int)_entityBoat.Step;
     }
 
+    // Виртуальный метод прорисовки (для переопределения в наследниках)
     // Прорисовка лодки
     // Прорисовка лодки
-    public void DrawTransport(Graphics g)
+    public virtual void DrawTransport(Graphics g)
     {
         if (_entityBoat is null || !_startPosX.HasValue || !_startPosY.HasValue)
             return;
@@ -70,14 +90,14 @@ public class DrawingBoat
         int y = _startPosY.Value;
 
         using Pen blackPen = new Pen(Color.Black, 2);
-        using Brush hullBrush = new SolidBrush(Color.White);
+        using Brush hullBrush = new SolidBrush(_entityBoat.BodyColor);
 
         // ===== Корпус лодки =====
         Point[] boatPoints =
         {
         new Point(x, y),                           // левый верх
         new Point(x + 70, y),                     // верх перед носом
-        new Point(x + 100, y + 20),               // нос
+        new Point(x + _boatWidth, y + 20),        // нос
         new Point(x + 70, y + 40),                // низ перед носом
         new Point(x, y + 40)                      // левый низ
     };
