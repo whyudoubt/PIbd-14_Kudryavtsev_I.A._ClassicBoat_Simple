@@ -58,7 +58,6 @@ public partial class FormBoat : Form
             _templateMovement = null;
             Draw();
 
-            // Заголовок для простой лодки
             this.Text = $"Лодка (простая) | Скорость: {speed} | Вес: {weight} | Шаг: {(int)boat.BoatStep}";
         }
         else
@@ -68,7 +67,7 @@ public partial class FormBoat : Form
         }
     }
 
-    // Создание продвинутой лодки (с парусом)
+    // Создание продвинутой лодки
     private void ButtonCreateImproved_Click(object sender, EventArgs e)
     {
         Random random = new Random();
@@ -89,7 +88,6 @@ public partial class FormBoat : Form
             _templateMovement = null;
             Draw();
 
-            // Заголовок для продвинутой лодки с информацией о парусе
             string sailStatus = hasSail ? "есть" : "нет";
             this.Text = $"Лодка (продвинутая) | Скорость: {speed} | Вес: {weight} | Шаг: {(int)boat.BoatStep} | Парус: {sailStatus}";
         }
@@ -99,6 +97,7 @@ public partial class FormBoat : Form
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
+
 
     private void ButtonMove_Click(object sender, EventArgs e)
     {
@@ -178,5 +177,65 @@ public partial class FormBoat : Form
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         Draw();
+    }
+
+    public void SetDrawingBoat(DrawingBoat boat)
+    {
+        if (boat is null)
+        {
+            MessageBox.Show("Лодка не существует!", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        if (pictureBoxField.Width > 0 && pictureBoxField.Height > 0)
+        {
+            _canvas.SetPictureSize(pictureBoxField.Width, pictureBoxField.Height);
+        }
+
+        Random random = new Random();
+
+        if (boat.BoatWidth > pictureBoxField.Width || boat.BoatHeight > pictureBoxField.Height)
+        {
+            MessageBox.Show($"Лодка слишком большая для поля! Размеры лодки: {boat.BoatWidth}x{boat.BoatHeight}, поле: {pictureBoxField.Width}x{pictureBoxField.Height}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        boat.SetPosition(0, 0);
+
+        if (_canvas.InsertBoat(boat))
+        {
+            int maxX = Math.Max(20, pictureBoxField.Width - boat.BoatWidth - 20);
+            int maxY = Math.Max(20, pictureBoxField.Height - boat.BoatHeight - 20);
+            int posX = random.Next(10, maxX);
+            int posY = random.Next(10, maxY);
+
+            _canvas.SetBoatPosition(posX, posY);
+            comboBoxDestination.SelectedIndex = -1;
+            _templateMovement = null;
+
+            // Определяем тип лодки
+            if (boat is DrawingImprovedBoat)
+            {
+                comboBoxDestination.Enabled = true;
+                this.Text = $"Лодка (продвинутая, передана из гавани) | Шаг: {(int)boat.BoatStep}";
+            }
+            else
+            {
+                comboBoxDestination.Enabled = false;
+                this.Text = $"Лодка (простая, передана из гавани) | Шаг: {(int)boat.BoatStep}";
+            }
+
+            Draw();
+
+            MessageBox.Show($"Лодка успешно передана на тест-драйв!", "Успех",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        else
+        {
+            MessageBox.Show("Не удалось добавить лодку на поле!", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
     }
 }

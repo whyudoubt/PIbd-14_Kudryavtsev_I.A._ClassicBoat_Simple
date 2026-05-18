@@ -20,7 +20,7 @@ public class DrawingBoat
     public int? PosY => _startPosY;
     public double? BoatStep => _entityBoat?.Step;
 
-    // Конструктор для создания новой лодки (для второй лабы)
+    // Конструктор для создания новой лодки
     public DrawingBoat(int speed, double weight, Color bodyColor)
     {
         _entityBoat = new EntityBoat();
@@ -29,7 +29,7 @@ public class DrawingBoat
         _startPosY = null;
     }
 
-    // Конструктор для наследников (позволяет менять размеры)
+    // Конструктор для наследников
     protected DrawingBoat(int boatWidth, int boatHeight)
     {
         _boatWidth = boatWidth;
@@ -38,7 +38,7 @@ public class DrawingBoat
         _startPosY = null;
     }
 
-    // Старый метод Init (для совместимости с первой лабой)
+    // Старый метод Init
     public void Init(int speed, double weight, Color bodyColor)
     {
         if (_entityBoat == null)
