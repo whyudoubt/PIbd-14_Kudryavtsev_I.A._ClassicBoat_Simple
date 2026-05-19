@@ -207,3 +207,36 @@ partial class FormCompany
         // Список компаний для выбора
         this.listBoxCompanies.Location = new Point(10, 223);
         this.listBoxCompanies.Name = "listBoxCompanies";
+        this.listBoxCompanies.Size = new Size(180, 40);
+        this.listBoxCompanies.SelectedIndexChanged += new EventHandler(this.ListBoxCompanies_SelectedIndexChanged);
+
+        // Статусная строка с количеством лодок
+        this.labelStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+        this.labelStatus.Location = new Point(720, 615);
+        this.labelStatus.Name = "labelStatus";
+        this.labelStatus.Size = new Size(200, 30);
+        this.labelStatus.Text = "Лодок в гавани: 0";
+        this.labelStatus.TextAlign = ContentAlignment.MiddleCenter;
+
+        // Настройки главной формы
+        this.AutoScaleDimensions = new SizeF(7F, 15F);
+        this.AutoScaleMode = AutoScaleMode.Font;
+        this.ClientSize = new Size(934, 660);
+        this.Controls.Add(this.groupBoxStorage);
+        this.Controls.Add(this.groupBoxActions);
+        this.Controls.Add(this.labelStatus);
+        this.Controls.Add(this.pictureBoxField);
+        this.MinimumSize = new Size(900, 660);
+        this.Name = "FormCompany";
+        this.StartPosition = FormStartPosition.CenterScreen;
+        this.Text = "Лабораторная работа №4";
+        this.Resize += new EventHandler(this.FormCompany_Resize);
+
+        this.groupBoxActions.ResumeLayout(false);
+        this.groupBoxActions.PerformLayout();
+        this.groupBoxStorage.ResumeLayout(false);
+        this.groupBoxStorage.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)this.pictureBoxField).EndInit();
+        this.ResumeLayout(false);
+    }
+}
