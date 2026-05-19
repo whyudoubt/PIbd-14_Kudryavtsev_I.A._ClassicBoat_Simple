@@ -4,7 +4,6 @@ using System.Drawing.Drawing2D;
 
 namespace ClassicBoat;
 
-// Класс, отвечающий за прорисовку и перемещение лодки
 public class DrawingBoat
 {
     protected EntityBoat? _entityBoat;
@@ -20,7 +19,6 @@ public class DrawingBoat
     public int? PosY => _startPosY;
     public double? BoatStep => _entityBoat?.Step;
 
-    // Конструктор для создания новой лодки
     public DrawingBoat(int speed, double weight, Color bodyColor)
     {
         _entityBoat = new EntityBoat();
@@ -29,7 +27,6 @@ public class DrawingBoat
         _startPosY = null;
     }
 
-    // Конструктор для наследников
     protected DrawingBoat(int boatWidth, int boatHeight)
     {
         _boatWidth = boatWidth;
@@ -38,7 +35,6 @@ public class DrawingBoat
         _startPosY = null;
     }
 
-    // Старый метод Init
     public void Init(int speed, double weight, Color bodyColor)
     {
         if (_entityBoat == null)
@@ -78,9 +74,18 @@ public class DrawingBoat
         _startPosY += (int)_entityBoat.Step;
     }
 
-    // Виртуальный метод прорисовки (для переопределения в наследниках)
-    // Прорисовка лодки
-    // Прорисовка лодки
+    // Метод для изменения основного цвета у существующего объекта
+    public void ChangeBodyColor(Color newColor)
+    {
+        _entityBoat?.ChangeBodyColor(newColor);
+    }
+
+    // Получить текущий цвет корпуса
+    public Color GetBodyColor()
+    {
+        return _entityBoat?.BodyColor ?? Color.White;
+    }
+
     public virtual void DrawTransport(Graphics g)
     {
         if (_entityBoat is null || !_startPosX.HasValue || !_startPosY.HasValue)
@@ -92,20 +97,18 @@ public class DrawingBoat
         using Pen blackPen = new Pen(Color.Black, 2);
         using Brush hullBrush = new SolidBrush(_entityBoat.BodyColor);
 
-        // ===== Корпус лодки =====
         Point[] boatPoints =
         {
-        new Point(x, y),                           // левый верх
-        new Point(x + 70, y),                     // верх перед носом
-        new Point(x + _boatWidth, y + 20),        // нос
-        new Point(x + 70, y + 40),                // низ перед носом
-        new Point(x, y + 40)                      // левый низ
-    };
+            new Point(x, y),
+            new Point(x + 70, y),
+            new Point(x + _boatWidth, y + 20),
+            new Point(x + 70, y + 40),
+            new Point(x, y + 40)
+        };
 
         g.FillPolygon(hullBrush, boatPoints);
         g.DrawPolygon(blackPen, boatPoints);
 
-        // ===== Внутренний закруглённый элемент =====
         int innerX = x + 8;
         int innerY = y + 6;
         int innerWidth = 55;

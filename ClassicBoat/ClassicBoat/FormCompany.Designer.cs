@@ -3,11 +3,8 @@
 partial class FormCompany
 {
     private System.ComponentModel.IContainer components = null;
-
-    // Элементы управления на форме
     private PictureBox pictureBoxField;
-    private Button buttonAddSimple;
-    private Button buttonAddImproved;
+    private Button buttonAddBoat;           // Одна кнопка для добавления лодки
     private Button buttonRemove;
     private Button buttonTransfer;
     private Button buttonRefresh;
@@ -35,12 +32,10 @@ partial class FormCompany
         base.Dispose(disposing);
     }
 
-    // Инициализация всех компонентов формы
     private void InitializeComponent()
     {
         this.pictureBoxField = new PictureBox();
-        this.buttonAddSimple = new Button();
-        this.buttonAddImproved = new Button();
+        this.buttonAddBoat = new Button();
         this.buttonRemove = new Button();
         this.buttonTransfer = new Button();
         this.buttonRefresh = new Button();
@@ -65,7 +60,7 @@ partial class FormCompany
         ((System.ComponentModel.ISupportInitialize)this.pictureBoxField).BeginInit();
         this.SuspendLayout();
 
-        // Поле для отображения лодок в гавани
+        // pictureBoxField
         this.pictureBoxField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         this.pictureBoxField.BackColor = Color.LightBlue;
         this.pictureBoxField.Location = new Point(12, 12);
@@ -74,12 +69,11 @@ partial class FormCompany
         this.pictureBoxField.TabIndex = 0;
         this.pictureBoxField.TabStop = false;
 
-        // Группа элементов управления гаванью
+        // groupBoxActions - управление гаванью
         this.groupBoxActions.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         this.groupBoxActions.Controls.Add(this.labelPosition);
         this.groupBoxActions.Controls.Add(this.textBoxPosition);
-        this.groupBoxActions.Controls.Add(this.buttonAddSimple);
-        this.groupBoxActions.Controls.Add(this.buttonAddImproved);
+        this.groupBoxActions.Controls.Add(this.buttonAddBoat);
         this.groupBoxActions.Controls.Add(this.buttonRemove);
         this.groupBoxActions.Controls.Add(this.buttonTransfer);
         this.groupBoxActions.Controls.Add(this.buttonRefresh);
@@ -90,53 +84,50 @@ partial class FormCompany
         this.groupBoxActions.TabStop = false;
         this.groupBoxActions.Text = "Управление гаванью";
 
-        // Кнопка добавления простой лодки
-        this.buttonAddSimple.Location = new Point(10, 25);
-        this.buttonAddSimple.Name = "buttonAddSimple";
-        this.buttonAddSimple.Size = new Size(180, 40);
-        this.buttonAddSimple.Text = "Добавить простую лодку";
-        this.buttonAddSimple.Click += new EventHandler(this.ButtonAddSimple_Click);
+        // Кнопка добавления лодки (открывает форму конфигурации)
+        this.buttonAddBoat.Location = new Point(10, 25);
+        this.buttonAddBoat.Name = "buttonAddBoat";
+        this.buttonAddBoat.Size = new Size(180, 40);
+        this.buttonAddBoat.Text = "Добавить лодку";
+        this.buttonAddBoat.UseVisualStyleBackColor = true;
+        this.buttonAddBoat.Click += new EventHandler(this.ButtonAddBoat_Click);
 
-        // Кнопка добавления лодки с парусом
-        this.buttonAddImproved.Location = new Point(10, 70);
-        this.buttonAddImproved.Name = "buttonAddImproved";
-        this.buttonAddImproved.Size = new Size(180, 40);
-        this.buttonAddImproved.Text = "Добавить лодку с парусом";
-        this.buttonAddImproved.Click += new EventHandler(this.ButtonAddImproved_Click);
+        // Кнопка удаления лодки
+        this.buttonRemove.Location = new Point(10, 80);
+        this.buttonRemove.Name = "buttonRemove";
+        this.buttonRemove.Size = new Size(180, 40);
+        this.buttonRemove.Text = "Удалить лодку по позиции";
+        this.buttonRemove.UseVisualStyleBackColor = true;
+        this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
 
-        // Метка для поля ввода позиции удаления
-        this.labelPosition.Location = new Point(10, 120);
+        // Кнопка передачи лодки на тест-драйв
+        this.buttonTransfer.Location = new Point(10, 130);
+        this.buttonTransfer.Name = "buttonTransfer";
+        this.buttonTransfer.Size = new Size(180, 40);
+        this.buttonTransfer.Text = "Передать лодку на тесты";
+        this.buttonTransfer.UseVisualStyleBackColor = true;
+        this.buttonTransfer.Click += new EventHandler(this.ButtonTransfer_Click);
+
+        // Кнопка обновления отображения
+        this.buttonRefresh.Location = new Point(10, 180);
+        this.buttonRefresh.Name = "buttonRefresh";
+        this.buttonRefresh.Size = new Size(180, 40);
+        this.buttonRefresh.Text = "Обновить отображение";
+        this.buttonRefresh.UseVisualStyleBackColor = true;
+        this.buttonRefresh.Click += new EventHandler(this.ButtonRefresh_Click);
+
+        // Метка для поля ввода позиции
+        this.labelPosition.Location = new Point(10, 235);
         this.labelPosition.Name = "labelPosition";
         this.labelPosition.Size = new Size(180, 25);
         this.labelPosition.Text = "Номер позиции для удаления:";
 
-        // Поле для ввода позиции удаления
-        this.textBoxPosition.Location = new Point(10, 148);
+        // Поле для ввода позиции
+        this.textBoxPosition.Location = new Point(10, 263);
         this.textBoxPosition.Name = "textBoxPosition";
         this.textBoxPosition.Size = new Size(180, 23);
 
-        // Кнопка удаления лодки по позиции
-        this.buttonRemove.Location = new Point(10, 180);
-        this.buttonRemove.Name = "buttonRemove";
-        this.buttonRemove.Size = new Size(180, 40);
-        this.buttonRemove.Text = "Удалить лодку по позиции";
-        this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
-
-        // Кнопка передачи лодки на тест-драйв
-        this.buttonTransfer.Location = new Point(10, 230);
-        this.buttonTransfer.Name = "buttonTransfer";
-        this.buttonTransfer.Size = new Size(180, 40);
-        this.buttonTransfer.Text = "Передать лодку на тесты";
-        this.buttonTransfer.Click += new EventHandler(this.ButtonTransfer_Click);
-
-        // Кнопка обновления отображения
-        this.buttonRefresh.Location = new Point(10, 280);
-        this.buttonRefresh.Name = "buttonRefresh";
-        this.buttonRefresh.Size = new Size(180, 40);
-        this.buttonRefresh.Text = "Обновить отображение";
-        this.buttonRefresh.Click += new EventHandler(this.ButtonRefresh_Click);
-
-        // Группа элементов управления хранилищем компаний
+        // groupBoxStorage - хранилище компаний
         this.groupBoxStorage.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         this.groupBoxStorage.Controls.Add(this.labelCompanyName);
         this.groupBoxStorage.Controls.Add(this.textBoxCompanyName);
@@ -154,7 +145,7 @@ partial class FormCompany
         this.groupBoxStorage.TabStop = false;
         this.groupBoxStorage.Text = "Хранилище компаний";
 
-        // Метка для поля ввода названия компании
+        // Метка для названия компании
         this.labelCompanyName.Location = new Point(10, 22);
         this.labelCompanyName.Name = "labelCompanyName";
         this.labelCompanyName.Size = new Size(180, 20);
@@ -165,20 +156,20 @@ partial class FormCompany
         this.textBoxCompanyName.Name = "textBoxCompanyName";
         this.textBoxCompanyName.Size = new Size(180, 23);
 
-        // Переключатель выбора коллекции на массиве
+        // Переключатель для выбора коллекции "Массив"
         this.radioButtonMassive.Location = new Point(10, 75);
         this.radioButtonMassive.Name = "radioButtonMassive";
         this.radioButtonMassive.Size = new Size(80, 20);
         this.radioButtonMassive.Text = "Массив";
         this.radioButtonMassive.Checked = true;
 
-        // Переключатель выбора коллекции на списке
+        // Переключатель для выбора коллекции "Список"
         this.radioButtonList.Location = new Point(90, 75);
         this.radioButtonList.Name = "radioButtonList";
         this.radioButtonList.Size = new Size(80, 20);
         this.radioButtonList.Text = "Список";
 
-        // Переключатель выбора коллекции на связном списке
+        // Переключатель для выбора коллекции "Связанный список"
         this.radioButtonLinkedList.Location = new Point(10, 100);
         this.radioButtonLinkedList.Name = "radioButtonLinkedList";
         this.radioButtonLinkedList.Size = new Size(130, 20);
@@ -207,3 +198,36 @@ partial class FormCompany
         // Список компаний для выбора
         this.listBoxCompanies.Location = new Point(10, 223);
         this.listBoxCompanies.Name = "listBoxCompanies";
+        this.listBoxCompanies.Size = new Size(180, 40);
+        this.listBoxCompanies.SelectedIndexChanged += new EventHandler(this.ListBoxCompanies_SelectedIndexChanged);
+
+        // Статусная строка с количеством лодок
+        this.labelStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+        this.labelStatus.Location = new Point(720, 615);
+        this.labelStatus.Name = "labelStatus";
+        this.labelStatus.Size = new Size(200, 30);
+        this.labelStatus.Text = "Лодок в гавани: 0";
+        this.labelStatus.TextAlign = ContentAlignment.MiddleCenter;
+
+        // FormCompany
+        this.AutoScaleDimensions = new SizeF(7F, 15F);
+        this.AutoScaleMode = AutoScaleMode.Font;
+        this.ClientSize = new Size(934, 660);
+        this.Controls.Add(this.groupBoxStorage);
+        this.Controls.Add(this.groupBoxActions);
+        this.Controls.Add(this.labelStatus);
+        this.Controls.Add(this.pictureBoxField);
+        this.MinimumSize = new Size(900, 660);
+        this.Name = "FormCompany";
+        this.StartPosition = FormStartPosition.CenterScreen;
+        this.Text = "Лабораторная работа №5 - Гавань";
+        this.Resize += new EventHandler(this.FormCompany_Resize);
+
+        this.groupBoxActions.ResumeLayout(false);
+        this.groupBoxActions.PerformLayout();
+        this.groupBoxStorage.ResumeLayout(false);
+        this.groupBoxStorage.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)this.pictureBoxField).EndInit();
+        this.ResumeLayout(false);
+    }
+}

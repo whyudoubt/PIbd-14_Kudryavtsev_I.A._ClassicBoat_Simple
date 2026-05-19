@@ -54,8 +54,8 @@ public partial class FormCompany : Form
         }
     }
 
-    // Добавление простой лодки в выбранную компанию
-    private void ButtonAddSimple_Click(object sender, EventArgs e)
+    // Кнопка добавления лодки (открывает форму конфигурации)
+    private void ButtonAddBoat_Click(object sender, EventArgs e)
     {
         if (_company is null)
         {
@@ -64,80 +64,24 @@ public partial class FormCompany : Form
             return;
         }
 
-        Random random = new Random();
-        ColorDialog colorDialog = new ColorDialog();
-        Color bodyColor;
+        FormBoatConfig configForm = new FormBoatConfig();
+        configForm.BoatCreated += OnBoatCreated;
+        configForm.Show();
+    }
 
-        if (colorDialog.ShowDialog() == DialogResult.OK)
+    // Обработчик события создания лодки из формы конфигурации
+    private void OnBoatCreated(DrawingBoat boat)
+    {
+        if (_company is null)
         {
-            bodyColor = colorDialog.Color;
+            MessageBox.Show("Сначала выберите компанию!", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
-        else
-        {
-            bodyColor = Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
-        }
-
-        int speed = random.Next(100, 300);
-        double weight = random.Next(1000, 3000);
-
-        DrawingBoat boat = new DrawingBoat(speed, weight, bodyColor);
 
         if (_company + boat)
         {
             MessageBox.Show("Лодка добавлена в гавань!", "Успех",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            RefreshDisplay();
-        }
-        else
-        {
-            MessageBox.Show("Не удалось добавить лодку!", "Ошибка",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-    }
-
-    // Добавление продвинутой лодки с парусом в выбранную компанию
-    private void ButtonAddImproved_Click(object sender, EventArgs e)
-    {
-        if (_company is null)
-        {
-            MessageBox.Show("Сначала выберите компанию!", "Ошибка",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        Random random = new Random();
-
-        ColorDialog colorDialog1 = new ColorDialog();
-        Color bodyColor;
-        if (colorDialog1.ShowDialog() == DialogResult.OK)
-        {
-            bodyColor = colorDialog1.Color;
-        }
-        else
-        {
-            bodyColor = Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
-        }
-
-        ColorDialog colorDialog2 = new ColorDialog();
-        Color sailColor;
-        if (colorDialog2.ShowDialog() == DialogResult.OK)
-        {
-            sailColor = colorDialog2.Color;
-        }
-        else
-        {
-            sailColor = Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
-        }
-
-        int speed = random.Next(100, 300);
-        double weight = random.Next(1000, 3000);
-        bool hasSail = true;
-
-        DrawingImprovedBoat boat = new DrawingImprovedBoat(speed, weight, bodyColor, sailColor, hasSail);
-
-        if (_company + boat)
-        {
-            MessageBox.Show("Продвинутая лодка добавлена в гавань!", "Успех",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
             RefreshDisplay();
         }
