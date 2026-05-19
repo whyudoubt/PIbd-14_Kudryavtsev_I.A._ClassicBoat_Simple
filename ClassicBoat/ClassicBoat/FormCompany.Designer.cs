@@ -3,8 +3,12 @@
 partial class FormCompany
 {
     private System.ComponentModel.IContainer components = null;
+
+    // Элементы для отображения поля
     private PictureBox pictureBoxField;
-    private Button buttonAddBoat;           // Одна кнопка для добавления лодки
+
+    // Элементы для управления лодками
+    private Button buttonAddBoat;
     private Button buttonRemove;
     private Button buttonTransfer;
     private Button buttonRefresh;
@@ -12,6 +16,8 @@ partial class FormCompany
     private Label labelPosition;
     private Label labelStatus;
     private GroupBox groupBoxActions;
+
+    // Элементы для управления хранилищем компаний
     private GroupBox groupBoxStorage;
     private TextBox textBoxCompanyName;
     private Label labelCompanyName;
@@ -22,6 +28,14 @@ partial class FormCompany
     private Button buttonCompanyDel;
     private ListBox listBoxCompanies;
     private Label labelCompanies;
+
+    // Элементы меню и диалогов для сохранения/загрузки
+    private MenuStrip menuStrip;
+    private ToolStripMenuItem fileMenu;
+    private ToolStripMenuItem saveMenuItem;
+    private ToolStripMenuItem loadMenuItem;
+    private SaveFileDialog saveFileDialog;
+    private OpenFileDialog openFileDialog;
 
     protected override void Dispose(bool disposing)
     {
@@ -55,15 +69,54 @@ partial class FormCompany
         this.listBoxCompanies = new ListBox();
         this.labelCompanies = new Label();
 
+        // Элементы меню
+        this.menuStrip = new MenuStrip();
+        this.fileMenu = new ToolStripMenuItem();
+        this.saveMenuItem = new ToolStripMenuItem();
+        this.loadMenuItem = new ToolStripMenuItem();
+        this.saveFileDialog = new SaveFileDialog();
+        this.openFileDialog = new OpenFileDialog();
+
         this.groupBoxActions.SuspendLayout();
         this.groupBoxStorage.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)this.pictureBoxField).BeginInit();
         this.SuspendLayout();
 
+        // Настройка диалогов сохранения и загрузки
+        this.saveFileDialog.Filter = "txt files (*.txt)|*.txt";
+        this.saveFileDialog.DefaultExt = "txt";
+        this.openFileDialog.Filter = "txt files (*.txt)|*.txt";
+        this.openFileDialog.DefaultExt = "txt";
+
+        // menuStrip
+        this.menuStrip.Items.AddRange(new ToolStripItem[] { this.fileMenu });
+        this.menuStrip.Location = new Point(0, 0);
+        this.menuStrip.Name = "menuStrip";
+        this.menuStrip.Size = new Size(934, 28);
+        this.menuStrip.TabIndex = 3;
+
+        // fileMenu
+        this.fileMenu.DropDownItems.AddRange(new ToolStripItem[] { this.saveMenuItem, this.loadMenuItem });
+        this.fileMenu.Name = "fileMenu";
+        this.fileMenu.Size = new Size(55, 24);
+        this.fileMenu.Text = "Файл";
+
+        // saveMenuItem
+        this.saveMenuItem.Name = "saveMenuItem";
+        this.saveMenuItem.Size = new Size(150, 26);
+        this.saveMenuItem.Text = "Сохранить";
+        this.saveMenuItem.Click += new EventHandler(this.SaveMenuItem_Click);
+
+        // loadMenuItem
+        this.loadMenuItem.Name = "loadMenuItem";
+        this.loadMenuItem.Size = new Size(150, 26);
+        this.loadMenuItem.Text = "Загрузить";
+        this.loadMenuItem.Click += new EventHandler(this.LoadMenuItem_Click);
+
         // pictureBoxField
         this.pictureBoxField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         this.pictureBoxField.BackColor = Color.LightBlue;
-        this.pictureBoxField.Location = new Point(12, 12);
+        this.pictureBoxField.Location = new Point(12, 40);
         this.pictureBoxField.Name = "pictureBoxField";
         this.pictureBoxField.Size = new Size(700, 500);
         this.pictureBoxField.TabIndex = 0;
@@ -77,14 +130,14 @@ partial class FormCompany
         this.groupBoxActions.Controls.Add(this.buttonRemove);
         this.groupBoxActions.Controls.Add(this.buttonTransfer);
         this.groupBoxActions.Controls.Add(this.buttonRefresh);
-        this.groupBoxActions.Location = new Point(720, 12);
+        this.groupBoxActions.Location = new Point(720, 40);
         this.groupBoxActions.Name = "groupBoxActions";
         this.groupBoxActions.Size = new Size(200, 340);
         this.groupBoxActions.TabIndex = 1;
         this.groupBoxActions.TabStop = false;
         this.groupBoxActions.Text = "Управление гаванью";
 
-        // Кнопка добавления лодки (открывает форму конфигурации)
+        // Кнопка добавления лодки
         this.buttonAddBoat.Location = new Point(10, 25);
         this.buttonAddBoat.Name = "buttonAddBoat";
         this.buttonAddBoat.Size = new Size(180, 40);
@@ -138,7 +191,7 @@ partial class FormCompany
         this.groupBoxStorage.Controls.Add(this.buttonCompanyDel);
         this.groupBoxStorage.Controls.Add(this.labelCompanies);
         this.groupBoxStorage.Controls.Add(this.listBoxCompanies);
-        this.groupBoxStorage.Location = new Point(720, 360);
+        this.groupBoxStorage.Location = new Point(720, 390);
         this.groupBoxStorage.Name = "groupBoxStorage";
         this.groupBoxStorage.Size = new Size(200, 290);
         this.groupBoxStorage.TabIndex = 2;
@@ -203,7 +256,7 @@ partial class FormCompany
 
         // Статусная строка с количеством лодок
         this.labelStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        this.labelStatus.Location = new Point(720, 615);
+        this.labelStatus.Location = new Point(720, 685);
         this.labelStatus.Name = "labelStatus";
         this.labelStatus.Size = new Size(200, 30);
         this.labelStatus.Text = "Лодок в гавани: 0";
@@ -212,15 +265,17 @@ partial class FormCompany
         // FormCompany
         this.AutoScaleDimensions = new SizeF(7F, 15F);
         this.AutoScaleMode = AutoScaleMode.Font;
-        this.ClientSize = new Size(934, 660);
+        this.ClientSize = new Size(934, 720);
         this.Controls.Add(this.groupBoxStorage);
         this.Controls.Add(this.groupBoxActions);
         this.Controls.Add(this.labelStatus);
         this.Controls.Add(this.pictureBoxField);
-        this.MinimumSize = new Size(900, 660);
+        this.Controls.Add(this.menuStrip);
+        this.MainMenuStrip = this.menuStrip;
+        this.MinimumSize = new Size(900, 720);
         this.Name = "FormCompany";
         this.StartPosition = FormStartPosition.CenterScreen;
-        this.Text = "Лабораторная работа №5 - Гавань";
+        this.Text = "Лабораторная работа №6 - Гавань";
         this.Resize += new EventHandler(this.FormCompany_Resize);
 
         this.groupBoxActions.ResumeLayout(false);
@@ -229,5 +284,6 @@ partial class FormCompany
         this.groupBoxStorage.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)this.pictureBoxField).EndInit();
         this.ResumeLayout(false);
+        this.PerformLayout();
     }
 }

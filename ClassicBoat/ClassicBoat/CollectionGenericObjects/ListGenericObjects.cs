@@ -19,7 +19,6 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
             if (value > 0)
             {
                 _maxCount = value;
-                // Если текущее количество превышает новый лимит, обрезаем
                 while (_collection.Count > _maxCount)
                 {
                     _collection.RemoveAt(_collection.Count - 1);
@@ -27,6 +26,8 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
             }
         }
     }
+
+    public CollectionType CollectionType => CollectionType.List;
 
     public ListGenericObjects()
     {
@@ -67,5 +68,13 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
 
         _collection.RemoveAt(position);
         return true;
+    }
+
+    public IEnumerable<T> GetItems()
+    {
+        foreach (var item in _collection)
+        {
+            yield return item;
+        }
     }
 }

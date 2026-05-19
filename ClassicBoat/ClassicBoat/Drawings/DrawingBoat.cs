@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using ClassicBoat.Helpers;
 
 namespace ClassicBoat;
 
@@ -78,6 +79,13 @@ public class DrawingBoat
     public void ChangeBodyColor(Color newColor)
     {
         _entityBoat?.ChangeBodyColor(newColor);
+    }
+
+    // Получение строки для сохранения
+    public override string ToString()
+    {
+        string[]? array = _entityBoat?.GetStringRepresentation();
+        return array is not null ? string.Join(SeparatorConstants.SeparatorForObject, array) : string.Empty;
     }
 
     // Получить текущий цвет корпуса

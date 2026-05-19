@@ -24,4 +24,10 @@ public class EntityBoat
     {
         BodyColor = newColor;
     }
+
+    // Получение строк с значениями свойств объекта класса-сущности
+    public virtual string[] GetStringRepresentation()
+    {
+        return [nameof(EntityBoat), Speed.ToString(), Weight.ToString(), BodyColor.Name];
+    }
 }
