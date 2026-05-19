@@ -18,4 +18,10 @@ public class EntityBoat
         Weight = weight;
         BodyColor = bodyColor;
     }
+
+    // Метод для изменения основного цвета
+    public void ChangeBodyColor(Color newColor)
+    {
+        BodyColor = newColor;
+    }
 }
