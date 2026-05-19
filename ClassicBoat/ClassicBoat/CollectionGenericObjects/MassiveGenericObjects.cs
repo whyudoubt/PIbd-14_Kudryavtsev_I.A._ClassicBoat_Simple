@@ -1,9 +1,11 @@
-﻿namespace ClassicBoat.CollectionGenericObjects;
+﻿using System;
+
+namespace ClassicBoat.CollectionGenericObjects;
 
 // Параметризованный набор объектов на массиве
 public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : class
 {
-    private T?[] _collection = Array.Empty<T?>();
+    private T?[] _collection;
 
     public int CountObjects
     {
@@ -30,6 +32,7 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
         }
     }
 
+    // Конструктор
     public MassiveGenericObjects()
     {
         _collection = Array.Empty<T?>();
@@ -53,21 +56,18 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
 
         if (position < 0) position = 0;
 
-        // Расширяем массив если нужно
         if (position >= _collection.Length)
         {
             int newSize = position + 1;
             Array.Resize(ref _collection, newSize);
         }
 
-        // Если место свободно - вставляем
         if (_collection[position] is null)
         {
             _collection[position] = obj;
             return true;
         }
 
-        // Ищем свободное место справа
         for (int i = position + 1; i < _collection.Length; i++)
         {
             if (_collection[i] is null)
@@ -77,7 +77,6 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
             }
         }
 
-        // Ищем свободное место слева
         for (int i = position - 1; i >= 0; i--)
         {
             if (_collection[i] is null)
@@ -87,7 +86,6 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
             }
         }
 
-        // Нет свободных мест - расширяем массив
         int newSize2 = _collection.Length + 1;
         Array.Resize(ref _collection, newSize2);
         _collection[newSize2 - 1] = obj;
