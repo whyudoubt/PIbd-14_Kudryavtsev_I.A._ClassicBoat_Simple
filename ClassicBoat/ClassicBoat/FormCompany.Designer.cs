@@ -209,7 +209,11 @@ partial class FormCompany
         this.labelStatus.Text = "Лодок в гавани: 0";
         this.labelStatus.TextAlign = ContentAlignment.MiddleCenter;
 
+<<<<<<< HEAD
         // FormCompany
+=======
+        // Настройки главной формы
+>>>>>>> origin/lab04
         this.AutoScaleDimensions = new SizeF(7F, 15F);
         this.AutoScaleMode = AutoScaleMode.Font;
         this.ClientSize = new Size(934, 660);
@@ -220,7 +224,11 @@ partial class FormCompany
         this.MinimumSize = new Size(900, 660);
         this.Name = "FormCompany";
         this.StartPosition = FormStartPosition.CenterScreen;
+<<<<<<< HEAD
         this.Text = "Лабораторная работа №5 - Гавань";
+=======
+        this.Text = "Лабораторная работа №4";
+>>>>>>> origin/lab04
         this.Resize += new EventHandler(this.FormCompany_Resize);
 
         this.groupBoxActions.ResumeLayout(false);
