@@ -12,6 +12,8 @@ partial class FormCompany
     private Button buttonRemove;
     private Button buttonTransfer;
     private Button buttonRefresh;
+    private Button buttonSortByType;
+    private Button buttonSortByColor;
     private TextBox textBoxPosition;
     private Label labelPosition;
     private Label labelStatus;
@@ -53,6 +55,8 @@ partial class FormCompany
         this.buttonRemove = new Button();
         this.buttonTransfer = new Button();
         this.buttonRefresh = new Button();
+        this.buttonSortByType = new Button();
+        this.buttonSortByColor = new Button();
         this.textBoxPosition = new TextBox();
         this.labelPosition = new Label();
         this.labelStatus = new Label();
@@ -130,9 +134,11 @@ partial class FormCompany
         this.groupBoxActions.Controls.Add(this.buttonRemove);
         this.groupBoxActions.Controls.Add(this.buttonTransfer);
         this.groupBoxActions.Controls.Add(this.buttonRefresh);
+        this.groupBoxActions.Controls.Add(this.buttonSortByType);
+        this.groupBoxActions.Controls.Add(this.buttonSortByColor);
         this.groupBoxActions.Location = new Point(720, 40);
         this.groupBoxActions.Name = "groupBoxActions";
-        this.groupBoxActions.Size = new Size(200, 340);
+        this.groupBoxActions.Size = new Size(200, 430);
         this.groupBoxActions.TabIndex = 1;
         this.groupBoxActions.TabStop = false;
         this.groupBoxActions.Text = "Управление гаванью";
@@ -146,7 +152,7 @@ partial class FormCompany
         this.buttonAddBoat.Click += new EventHandler(this.ButtonAddBoat_Click);
 
         // Кнопка удаления лодки
-        this.buttonRemove.Location = new Point(10, 80);
+        this.buttonRemove.Location = new Point(10, 75);
         this.buttonRemove.Name = "buttonRemove";
         this.buttonRemove.Size = new Size(180, 40);
         this.buttonRemove.Text = "Удалить лодку по позиции";
@@ -154,7 +160,7 @@ partial class FormCompany
         this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
 
         // Кнопка передачи лодки на тест-драйв
-        this.buttonTransfer.Location = new Point(10, 130);
+        this.buttonTransfer.Location = new Point(10, 125);
         this.buttonTransfer.Name = "buttonTransfer";
         this.buttonTransfer.Size = new Size(180, 40);
         this.buttonTransfer.Text = "Передать лодку на тесты";
@@ -162,21 +168,37 @@ partial class FormCompany
         this.buttonTransfer.Click += new EventHandler(this.ButtonTransfer_Click);
 
         // Кнопка обновления отображения
-        this.buttonRefresh.Location = new Point(10, 180);
+        this.buttonRefresh.Location = new Point(10, 175);
         this.buttonRefresh.Name = "buttonRefresh";
         this.buttonRefresh.Size = new Size(180, 40);
         this.buttonRefresh.Text = "Обновить отображение";
         this.buttonRefresh.UseVisualStyleBackColor = true;
         this.buttonRefresh.Click += new EventHandler(this.ButtonRefresh_Click);
 
+        // Кнопка сортировки по типу
+        this.buttonSortByType.Location = new Point(10, 230);
+        this.buttonSortByType.Name = "buttonSortByType";
+        this.buttonSortByType.Size = new Size(180, 35);
+        this.buttonSortByType.Text = "Сортировать по типу";
+        this.buttonSortByType.UseVisualStyleBackColor = true;
+        this.buttonSortByType.Click += new EventHandler(this.ButtonSortByType_Click);
+
+        // Кнопка сортировки по цвету
+        this.buttonSortByColor.Location = new Point(10, 275);
+        this.buttonSortByColor.Name = "buttonSortByColor";
+        this.buttonSortByColor.Size = new Size(180, 35);
+        this.buttonSortByColor.Text = "Сортировать по цвету";
+        this.buttonSortByColor.UseVisualStyleBackColor = true;
+        this.buttonSortByColor.Click += new EventHandler(this.ButtonSortByColor_Click);
+
         // Метка для поля ввода позиции
-        this.labelPosition.Location = new Point(10, 235);
+        this.labelPosition.Location = new Point(10, 325);
         this.labelPosition.Name = "labelPosition";
         this.labelPosition.Size = new Size(180, 25);
         this.labelPosition.Text = "Номер позиции для удаления:";
 
         // Поле для ввода позиции
-        this.textBoxPosition.Location = new Point(10, 263);
+        this.textBoxPosition.Location = new Point(10, 353);
         this.textBoxPosition.Name = "textBoxPosition";
         this.textBoxPosition.Size = new Size(180, 23);
 
@@ -191,7 +213,7 @@ partial class FormCompany
         this.groupBoxStorage.Controls.Add(this.buttonCompanyDel);
         this.groupBoxStorage.Controls.Add(this.labelCompanies);
         this.groupBoxStorage.Controls.Add(this.listBoxCompanies);
-        this.groupBoxStorage.Location = new Point(720, 390);
+        this.groupBoxStorage.Location = new Point(720, 480);
         this.groupBoxStorage.Name = "groupBoxStorage";
         this.groupBoxStorage.Size = new Size(200, 290);
         this.groupBoxStorage.TabIndex = 2;
@@ -251,12 +273,12 @@ partial class FormCompany
         // Список компаний для выбора
         this.listBoxCompanies.Location = new Point(10, 223);
         this.listBoxCompanies.Name = "listBoxCompanies";
-        this.listBoxCompanies.Size = new Size(180, 40);
+        this.listBoxCompanies.Size = new Size(180, 50);
         this.listBoxCompanies.SelectedIndexChanged += new EventHandler(this.ListBoxCompanies_SelectedIndexChanged);
 
         // Статусная строка с количеством лодок
         this.labelStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        this.labelStatus.Location = new Point(720, 685);
+        this.labelStatus.Location = new Point(720, 775);
         this.labelStatus.Name = "labelStatus";
         this.labelStatus.Size = new Size(200, 30);
         this.labelStatus.Text = "Лодок в гавани: 0";
@@ -265,17 +287,17 @@ partial class FormCompany
         // FormCompany
         this.AutoScaleDimensions = new SizeF(7F, 15F);
         this.AutoScaleMode = AutoScaleMode.Font;
-        this.ClientSize = new Size(934, 720);
+        this.ClientSize = new Size(934, 810);
         this.Controls.Add(this.groupBoxStorage);
         this.Controls.Add(this.groupBoxActions);
         this.Controls.Add(this.labelStatus);
         this.Controls.Add(this.pictureBoxField);
         this.Controls.Add(this.menuStrip);
         this.MainMenuStrip = this.menuStrip;
-        this.MinimumSize = new Size(900, 720);
+        this.MinimumSize = new Size(900, 810);
         this.Name = "FormCompany";
         this.StartPosition = FormStartPosition.CenterScreen;
-        this.Text = "Лабораторная работа №6 - Гавань";
+        this.Text = "Лабораторная работа №8 - Гавань";
         this.Resize += new EventHandler(this.FormCompany_Resize);
 
         this.groupBoxActions.ResumeLayout(false);

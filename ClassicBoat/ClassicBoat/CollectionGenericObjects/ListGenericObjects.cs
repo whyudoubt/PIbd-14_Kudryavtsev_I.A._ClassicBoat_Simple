@@ -94,4 +94,13 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
             yield return item;
         }
     }
+
+    public void CollectionSort(IComparer<T?> comparer)
+    {
+        if (comparer is null)
+        {
+            throw new ArgumentNullException(nameof(comparer));
+        }
+        _collection.Sort(comparer);
+    }
 }

@@ -9,13 +9,13 @@ namespace ClassicBoat.CollectionGenericObjects;
 // Класс-хранилище компаний
 public class StorageCompanies
 {
-    private readonly Dictionary<string, AbstractCompany> _companies;
+    private readonly Dictionary<CompanyInfo, AbstractCompany> _companies;
 
-    public List<string> StorageKeys => [.. _companies.Keys];
+    public List<CompanyInfo> StorageKeys => [.. _companies.Keys];
 
     public StorageCompanies()
     {
-        _companies = new Dictionary<string, AbstractCompany>();
+        _companies = new Dictionary<CompanyInfo, AbstractCompany>();
     }
 
     public void AddCompany(string name, CollectionType collectionType,
@@ -23,9 +23,10 @@ public class StorageCompanies
     {
         if (string.IsNullOrWhiteSpace(name)) return;
 
-        string companyName = $"{name}_{collectionType}";
+        string description = $"Компания с коллекцией типа {collectionType}";
+        var companyInfo = new CompanyInfo(name, collectionType, description);
 
-        if (_companies.ContainsKey(companyName)) return;
+        if (_companies.ContainsKey(companyInfo)) return;
 
         ICollectionGenericObjects<DrawingBoat> collection = collectionType switch
         {
@@ -36,15 +37,26 @@ public class StorageCompanies
         };
 
         var company = new HarborCompany(pictureWidth, pictureHeight, collection);
-        _companies.Add(companyName, company);
+        _companies.Add(companyInfo, company);
     }
 
     public void DelCompany(string name)
     {
         if (string.IsNullOrWhiteSpace(name)) return;
-        if (_companies.ContainsKey(name))
+
+        CompanyInfo? keyToRemove = null;
+        foreach (var key in _companies.Keys)
         {
-            _companies.Remove(name);
+            if (key.Name == name)
+            {
+                keyToRemove = key;
+                break;
+            }
+        }
+
+        if (keyToRemove is not null)
+        {
+            _companies.Remove(keyToRemove);
         }
     }
 
@@ -52,8 +64,14 @@ public class StorageCompanies
     {
         if (string.IsNullOrWhiteSpace(name)) return null;
 
-        _companies.TryGetValue(name, out var company);
-        return company;
+        foreach (var pair in _companies)
+        {
+            if (pair.Key.Name == name)
+            {
+                return pair.Value;
+            }
+        }
+        return null;
     }
 
     // Индексатор для доступа к компании по имени
@@ -61,9 +79,7 @@ public class StorageCompanies
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(name)) return null;
-            _companies.TryGetValue(name, out var company);
-            return company;
+            return GetCompany(name);
         }
     }
 
@@ -81,9 +97,9 @@ public class StorageCompanies
 
             writer.WriteLine(nameof(StorageCompanies));
 
-            foreach (KeyValuePair<string, AbstractCompany> pair in _companies)
+            foreach (KeyValuePair<CompanyInfo, AbstractCompany> pair in _companies)
             {
-                string line = pair.Key + SeparatorConstants.SeparatorForKeyValue + pair.Value.GetDataAsString();
+                string line = pair.Key.ToString() + SeparatorConstants.SeparatorForKeyValue + pair.Value.GetDataAsString();
                 writer.WriteLine(line);
             }
         }
@@ -122,13 +138,19 @@ public class StorageCompanies
                     continue;
                 }
 
+                CompanyInfo? companyInfo = CompanyInfo.CreateCompanyInfo(data[0]);
+                if (companyInfo is null)
+                {
+                    continue;
+                }
+
                 AbstractCompany? company = AbstractCompanyFactory.CreateAbstractCompany(data[1], pictureWidth, pictureHeight);
                 if (company is null)
                 {
                     continue;
                 }
 
-                _companies.Add(data[0], company);
+                _companies.Add(companyInfo, company);
             }
         }
         catch (Exception ex) when (ex is FileNotFoundException || ex is InvalidDataException)

@@ -17,6 +17,9 @@ public class DrawingImprovedBoat : DrawingBoat
         _startPosY = null;
     }
 
+    // Конструктор для клонирования
+    private DrawingImprovedBoat() : base(110, 40) { }
+
     // Метод для изменения дополнительного цвета у существующего объекта
     public void ChangeAdditionalColor(Color newColor)
     {
@@ -44,6 +47,16 @@ public class DrawingImprovedBoat : DrawingBoat
             return improvedBoat.HasSail;
         }
         return false;
+    }
+
+    // Глубокое клонирование для продвинутой лодки
+    public override object Clone()
+    {
+        DrawingImprovedBoat clone = new DrawingImprovedBoat();
+        clone._entityBoat = _entityBoat?.Clone() as EntityBoat;
+        clone._startPosX = _startPosX;
+        clone._startPosY = _startPosY;
+        return clone;
     }
 
     public override void DrawTransport(Graphics g)

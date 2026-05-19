@@ -28,4 +28,7 @@ public interface ICollectionGenericObjects<T> where T : class
 
     // Получение объектов коллекции по одному
     IEnumerable<T> GetItems();
+
+    // Сортировка коллекции
+    void CollectionSort(IComparer<T?> comparer);
 }

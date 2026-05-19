@@ -130,4 +130,10 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
             yield return item;
         }
     }
+
+    public void CollectionSort(IComparer<T?> comparer)
+    {
+        // LinkedList не поддерживает сортировку
+        throw new NotSupportedException("Сортировка недоступна для коллекции на основе связного списка");
+    }
 }

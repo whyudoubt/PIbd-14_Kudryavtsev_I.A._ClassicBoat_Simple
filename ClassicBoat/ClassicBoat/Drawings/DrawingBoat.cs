@@ -5,7 +5,7 @@ using ClassicBoat.Helpers;
 
 namespace ClassicBoat;
 
-public class DrawingBoat
+public class DrawingBoat : ICloneable
 {
     protected EntityBoat? _entityBoat;
     protected int? _startPosX;
@@ -19,6 +19,11 @@ public class DrawingBoat
     public int? PosX => _startPosX;
     public int? PosY => _startPosY;
     public double? BoatStep => _entityBoat?.Step;
+
+    // Свойства для сортировки
+    public int? CarSpeed => _entityBoat?.Speed;
+    public double? CarWeight => _entityBoat?.Weight;
+    public Color CarColor => _entityBoat?.BodyColor ?? Color.White;
 
     public DrawingBoat(int speed, double weight, Color bodyColor)
     {
@@ -35,6 +40,9 @@ public class DrawingBoat
         _startPosX = null;
         _startPosY = null;
     }
+
+    // Конструктор для клонирования
+    protected DrawingBoat() { }
 
     public void Init(int speed, double weight, Color bodyColor)
     {
@@ -92,6 +100,16 @@ public class DrawingBoat
     public Color GetBodyColor()
     {
         return _entityBoat?.BodyColor ?? Color.White;
+    }
+
+    // Глубокое клонирование
+    public virtual object Clone()
+    {
+        DrawingBoat clone = new DrawingBoat();
+        clone._entityBoat = _entityBoat?.Clone() as EntityBoat;
+        clone._startPosX = _startPosX;
+        clone._startPosY = _startPosY;
+        return clone;
     }
 
     public virtual void DrawTransport(Graphics g)

@@ -1,5 +1,6 @@
-﻿using System.Drawing;
-using ClassicBoat.Drawings;
+﻿using ClassicBoat.Drawings;
+using ClassicBoat.Exceptions;
+using System.Drawing;
 
 namespace ClassicBoat.CollectionGenericObjects;
 
@@ -40,15 +41,24 @@ public class HarborCompany : AbstractCompany
     {
         for (int i = 0; i < _collection.MaxCount; i++)
         {
-            DrawingBoat? boat = _collection.GetObject(i);
+            DrawingBoat? boat = null;
+
+            // Безопасное получение объекта, обрабатываем исключение
+            try
+            {
+                boat = _collection.GetObject(i);
+            }
+            catch (PositionOutOfCollectionException)
+            {
+                // Если вышли за границы, просто прекращаем цикл
+                break;
+            }
 
             if (boat is not null)
             {
                 var (x, y) = GetPositionByIndex(i);
-
                 int drawX = x + 2;
                 int drawY = y + (_placeSizeHeight - boat.BoatHeight);
-
                 boat.SetPosition(drawX, drawY);
                 boat.DrawTransport(g);
             }
