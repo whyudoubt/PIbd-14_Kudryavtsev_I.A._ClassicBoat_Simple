@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassicBoat.Exceptions;
 
 namespace ClassicBoat.CollectionGenericObjects;
 
@@ -37,14 +38,19 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
     public T? GetObject(int position)
     {
         if (position < 0 || position >= _collection.Count)
-            return null;
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
         return _collection[position];
     }
 
     public bool InsertObject(T obj)
     {
         if (obj is null) return false;
-        if (_collection.Count >= _maxCount) return false;
+        if (_collection.Count >= _maxCount)
+        {
+            throw new CollectionOverflowException(_maxCount);
+        }
 
         _collection.Add(obj);
         return true;
@@ -53,9 +59,18 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
     public bool InsertObject(T obj, int position)
     {
         if (obj is null) return false;
-        if (_collection.Count >= _maxCount) return false;
-        if (position < 0) position = 0;
-        if (position > _collection.Count) position = _collection.Count;
+        if (_collection.Count >= _maxCount)
+        {
+            throw new CollectionOverflowException(_maxCount);
+        }
+        if (position < 0)
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
+        if (position > _collection.Count)
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         _collection.Insert(position, obj);
         return true;
@@ -64,7 +79,9 @@ public class ListGenericObjects<T> : ICollectionGenericObjects<T> where T : clas
     public bool RemoveObject(int position)
     {
         if (position < 0 || position >= _collection.Count)
-            return false;
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         _collection.RemoveAt(position);
         return true;

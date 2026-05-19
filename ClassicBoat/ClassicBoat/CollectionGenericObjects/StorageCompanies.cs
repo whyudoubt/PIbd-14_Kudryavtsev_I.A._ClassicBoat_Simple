@@ -68,11 +68,11 @@ public class StorageCompanies
     }
 
     // Сохранение информации в файл
-    public bool SaveData(string filename)
+    public void SaveData(string filename)
     {
         if (_companies.Count == 0)
         {
-            return false;
+            throw new InvalidOperationException("В хранилище отсутствуют коллекции для сохранения");
         }
 
         try
@@ -86,21 +86,19 @@ public class StorageCompanies
                 string line = pair.Key + SeparatorConstants.SeparatorForKeyValue + pair.Value.GetDataAsString();
                 writer.WriteLine(line);
             }
-
-            return true;
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            throw new IOException($"Ошибка при сохранении в файл {filename}: {ex.Message}", ex);
         }
     }
 
     // Загрузка информации из файла
-    public bool LoadData(string filename, int pictureWidth, int pictureHeight)
+    public void LoadData(string filename, int pictureWidth, int pictureHeight)
     {
         if (!File.Exists(filename))
         {
-            return false;
+            throw new FileNotFoundException($"Файл {filename} не найден");
         }
 
         try
@@ -110,7 +108,7 @@ public class StorageCompanies
             string? firstLine = reader.ReadLine();
             if (firstLine != nameof(StorageCompanies))
             {
-                return false;
+                throw new InvalidDataException("Неверный формат файла: ожидаются данные StorageCompanies");
             }
 
             _companies.Clear();
@@ -132,12 +130,14 @@ public class StorageCompanies
 
                 _companies.Add(data[0], company);
             }
-
-            return true;
         }
-        catch
+        catch (Exception ex) when (ex is FileNotFoundException || ex is InvalidDataException)
         {
-            return false;
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new IOException($"Ошибка при загрузке из файла {filename}: {ex.Message}", ex);
         }
     }
 }

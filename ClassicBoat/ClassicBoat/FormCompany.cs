@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using ClassicBoat.CollectionGenericObjects;
 using ClassicBoat.Drawings;
+using ClassicBoat.Exceptions;
+using Serilog;
 
 namespace ClassicBoat;
 
@@ -11,13 +13,14 @@ public partial class FormCompany : Form
     private AbstractCompany? _company;
     private readonly StorageCompanies _storageCompanies;
 
-    // Конструктор формы, инициализирует хранилище компаний
     public FormCompany()
     {
         InitializeComponent();
         _storageCompanies = new StorageCompanies();
         RefreshDisplay();
         RefreshCompanyList();
+
+        Log.Information("Приложение запущено");
     }
 
     // Обновление отображения текущей компании
@@ -67,6 +70,8 @@ public partial class FormCompany : Form
         FormBoatConfig configForm = new FormBoatConfig();
         configForm.BoatCreated += OnBoatCreated;
         configForm.Show();
+
+        Log.Information("Открыта форма создания лодки");
     }
 
     // Обработчик события создания лодки из формы конфигурации
@@ -79,16 +84,33 @@ public partial class FormCompany : Form
             return;
         }
 
-        if (_company + boat)
+        try
         {
-            MessageBox.Show("Лодка добавлена в гавань!", "Успех",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            RefreshDisplay();
+            if (_company + boat)
+            {
+                MessageBox.Show("Лодка добавлена в гавань!", "Успех",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                RefreshDisplay();
+                Log.Information("Добавлена лодка: {@Boat}", boat);
+            }
         }
-        else
+        catch (CollectionOverflowException ex)
         {
-            MessageBox.Show("Не удалось добавить лодку!", "Ошибка",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(ex.Message, "Ошибка переполнения",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Warning(ex, "Ошибка переполнения коллекции при добавлении лодки");
+        }
+        catch (PositionOutOfCollectionException ex)
+        {
+            MessageBox.Show(ex.Message, "Ошибка позиции",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Warning(ex, "Ошибка позиции при добавлении лодки");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Не удалось добавить лодку: {ex.Message}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Error(ex, "Неизвестная ошибка при добавлении лодки");
         }
     }
 
@@ -119,16 +141,33 @@ public partial class FormCompany : Form
         if (MessageBox.Show($"Удалить лодку с позиции {position}?", "Подтверждение",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
-            if (_company - position)
+            try
             {
-                MessageBox.Show("Лодка удалена!", "Успех",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                RefreshDisplay();
+                if (_company - position)
+                {
+                    MessageBox.Show("Лодка удалена!", "Успех",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    RefreshDisplay();
+                    Log.Information("Удалена лодка с позиции {Position}", position);
+                }
             }
-            else
+            catch (PositionOutOfCollectionException ex)
             {
-                MessageBox.Show("Не удалось удалить лодку! Неверная позиция.", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, "Ошибка позиции",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Warning(ex, "Ошибка позиции при удалении лодки: позиция {Position}", position);
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message, "Объект не найден",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Warning(ex, "Попытка удалить несуществующую лодку с позиции {Position}", position);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось удалить лодку: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error(ex, "Неизвестная ошибка при удалении лодки");
             }
         }
     }
@@ -156,6 +195,7 @@ public partial class FormCompany : Form
         formBoat.SetDrawingBoat(boat);
         formBoat.ShowDialog();
 
+        Log.Information("Лодка передана на тест-драйв");
         RefreshDisplay();
     }
 
@@ -165,6 +205,7 @@ public partial class FormCompany : Form
         RefreshDisplay();
         MessageBox.Show("Отображение обновлено!", "Информация",
             MessageBoxButtons.OK, MessageBoxIcon.Information);
+        Log.Information("Отображение гавани обновлено");
     }
 
     // Обработка изменения размера формы
@@ -196,6 +237,9 @@ public partial class FormCompany : Form
 
         MessageBox.Show("Компания добавлена в хранилище!", "Успех",
             MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        Log.Information("Добавлена компания {CompanyName} с типом коллекции {CollectionType}",
+            textBoxCompanyName.Text, collectionType);
     }
 
     // Удаление компании из хранилища
@@ -211,7 +255,8 @@ public partial class FormCompany : Form
         if (MessageBox.Show($"Удалить компанию \"{listBoxCompanies.SelectedItem}\"?", "Подтверждение",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
-            _storageCompanies.DelCompany(listBoxCompanies.SelectedItem.ToString());
+            string companyName = listBoxCompanies.SelectedItem.ToString();
+            _storageCompanies.DelCompany(companyName);
             RefreshCompanyList();
 
             if (_company is not null && listBoxCompanies.Items.Count == 0)
@@ -222,6 +267,8 @@ public partial class FormCompany : Form
 
             MessageBox.Show("Компания удалена!", "Успех",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            Log.Information("Удалена компания {CompanyName}", companyName);
         }
     }
 
@@ -241,6 +288,7 @@ public partial class FormCompany : Form
         }
 
         RefreshDisplay();
+        Log.Information("Выбрана компания {CompanyName}", companyName);
     }
 
     // Обработка нажатия "Сохранить"
@@ -248,15 +296,30 @@ public partial class FormCompany : Form
     {
         if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
-            if (_storageCompanies.SaveData(saveFileDialog.FileName))
+            try
             {
+                _storageCompanies.SaveData(saveFileDialog.FileName);
                 MessageBox.Show("Сохранение прошло успешно!", "Результат",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Log.Information("Данные сохранены в файл {FileName}", saveFileDialog.FileName);
             }
-            else
+            catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Не удалось сохранить данные!", "Ошибка",
+                MessageBox.Show(ex.Message, "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Warning(ex, "Ошибка при сохранении: нет данных для сохранения");
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Ошибка доступа к файлу: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error(ex, "Ошибка ввода-вывода при сохранении в файл {FileName}", saveFileDialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error(ex, "Неизвестная ошибка при сохранении в файл {FileName}", saveFileDialog.FileName);
             }
         }
     }
@@ -266,19 +329,40 @@ public partial class FormCompany : Form
     {
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
-            if (_storageCompanies.LoadData(openFileDialog.FileName,
-                pictureBoxField.Width, pictureBoxField.Height))
+            try
             {
+                _storageCompanies.LoadData(openFileDialog.FileName,
+                    pictureBoxField.Width, pictureBoxField.Height);
                 MessageBox.Show("Загрузка прошла успешно!", "Результат",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 RefreshCompanyList();
                 _company = null;
                 RefreshDisplay();
+                Log.Information("Данные загружены из файла {FileName}", openFileDialog.FileName);
             }
-            else
+            catch (FileNotFoundException ex)
             {
-                MessageBox.Show("Не удалось загрузить данные!", "Ошибка",
+                MessageBox.Show(ex.Message, "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Warning(ex, "Файл не найден при загрузке: {FileName}", openFileDialog.FileName);
+            }
+            catch (InvalidDataException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка формата файла",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Warning(ex, "Неверный формат файла при загрузке: {FileName}", openFileDialog.FileName);
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Ошибка доступа к файлу: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error(ex, "Ошибка ввода-вывода при загрузке из файла {FileName}", openFileDialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.Error(ex, "Неизвестная ошибка при загрузке из файла {FileName}", openFileDialog.FileName);
             }
         }
     }

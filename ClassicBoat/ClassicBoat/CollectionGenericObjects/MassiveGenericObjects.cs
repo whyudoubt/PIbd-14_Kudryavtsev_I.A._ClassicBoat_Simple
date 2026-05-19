@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassicBoat.Exceptions;
 
 namespace ClassicBoat.CollectionGenericObjects;
 
@@ -43,7 +44,9 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
     public T? GetObject(int position)
     {
         if (position < 0 || position >= _collection.Length)
-            return null;
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
         return _collection[position];
     }
 
@@ -56,7 +59,10 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
     {
         if (obj is null) return false;
 
-        if (position < 0) position = 0;
+        if (position < 0)
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         if (position >= _collection.Length)
         {
@@ -88,19 +94,20 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
             }
         }
 
-        int newSize2 = _collection.Length + 1;
-        Array.Resize(ref _collection, newSize2);
-        _collection[newSize2 - 1] = obj;
-        return true;
+        throw new CollectionOverflowException(_collection.Length);
     }
 
     public bool RemoveObject(int position)
     {
         if (position < 0 || position >= _collection.Length)
-            return false;
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         if (_collection[position] is null)
-            return false;
+        {
+            throw new ObjectNotFoundException(position);
+        }
 
         _collection[position] = null;
         return true;

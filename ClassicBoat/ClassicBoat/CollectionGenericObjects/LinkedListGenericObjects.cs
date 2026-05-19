@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassicBoat.Exceptions;
 
 namespace ClassicBoat.CollectionGenericObjects;
 
@@ -37,7 +38,9 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
     public T? GetObject(int position)
     {
         if (position < 0 || position >= _collection.Count)
-            return null;
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         var current = _collection.First;
         for (int i = 0; i < position; i++)
@@ -50,7 +53,10 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
     public bool InsertObject(T obj)
     {
         if (obj is null) return false;
-        if (_collection.Count >= _maxCount) return false;
+        if (_collection.Count >= _maxCount)
+        {
+            throw new CollectionOverflowException(_maxCount);
+        }
 
         _collection.AddLast(obj);
         return true;
@@ -59,8 +65,14 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
     public bool InsertObject(T obj, int position)
     {
         if (obj is null) return false;
-        if (_collection.Count >= _maxCount) return false;
-        if (position < 0) position = 0;
+        if (_collection.Count >= _maxCount)
+        {
+            throw new CollectionOverflowException(_maxCount);
+        }
+        if (position < 0)
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         if (position == 0)
         {
@@ -92,7 +104,9 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
     public bool RemoveObject(int position)
     {
         if (position < 0 || position >= _collection.Count)
-            return false;
+        {
+            throw new PositionOutOfCollectionException(position);
+        }
 
         var current = _collection.First;
         for (int i = 0; i < position; i++)
