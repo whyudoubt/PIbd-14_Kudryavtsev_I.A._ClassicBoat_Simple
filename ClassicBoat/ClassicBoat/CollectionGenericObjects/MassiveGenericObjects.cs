@@ -124,4 +124,10 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
             yield return _collection[i]!;
         }
     }
+
+    public void CollectionSort(IComparer<T?> comparer)
+    {
+        // Для массива сортировка не поддерживается из-за пустых ячеек
+        throw new NotSupportedException("Сортировка недоступна для коллекции на основе массива");
+    }
 }

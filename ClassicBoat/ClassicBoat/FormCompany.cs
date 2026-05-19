@@ -13,13 +13,14 @@ public partial class FormCompany : Form
     private AbstractCompany? _company;
     private readonly StorageCompanies _storageCompanies;
 
+    // Конструктор формы, инициализирует хранилище компаний
     public FormCompany()
     {
         InitializeComponent();
         _storageCompanies = new StorageCompanies();
         RefreshDisplay();
         RefreshCompanyList();
-
+        
         Log.Information("Приложение запущено");
     }
 
@@ -53,7 +54,7 @@ public partial class FormCompany : Form
         listBoxCompanies.Items.Clear();
         foreach (var key in _storageCompanies.StorageKeys)
         {
-            listBoxCompanies.Items.Add(key);
+            listBoxCompanies.Items.Add(key.ToString());
         }
     }
 
@@ -66,11 +67,11 @@ public partial class FormCompany : Form
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
-
+        
         FormBoatConfig configForm = new FormBoatConfig();
         configForm.BoatCreated += OnBoatCreated;
         configForm.Show();
-
+        
         Log.Information("Открыта форма создания лодки");
     }
 
@@ -172,7 +173,7 @@ public partial class FormCompany : Form
         }
     }
 
-    // Передача случайной лодки из текущей компании на тест-драйв
+    // Передача случайной лодки из текущей компании на тест-драйв (с клонированием)
     private void ButtonTransfer_Click(object sender, EventArgs e)
     {
         if (_company is null)
@@ -182,20 +183,30 @@ public partial class FormCompany : Form
             return;
         }
 
-        DrawingBoat? boat = _company.GetRandomObject();
+        DrawingBoat? originalBoat = _company.GetRandomObject();
 
-        if (boat is null)
+        if (originalBoat is null)
         {
             MessageBox.Show("В гавани нет лодок для передачи!", "Ошибка",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
+        
+        // Клонирование объекта
+        DrawingBoat? clonedBoat = originalBoat.Clone() as DrawingBoat;
+        
+        if (clonedBoat is null)
+        {
+            MessageBox.Show("Не удалось клонировать лодку!", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
 
         FormBoat formBoat = new FormBoat();
-        formBoat.SetDrawingBoat(boat);
+        formBoat.SetDrawingBoat(clonedBoat);
         formBoat.ShowDialog();
 
-        Log.Information("Лодка передана на тест-драйв");
+        Log.Information("Лодка клонирована и передана на тест-драйв");
         RefreshDisplay();
     }
 
@@ -237,8 +248,8 @@ public partial class FormCompany : Form
 
         MessageBox.Show("Компания добавлена в хранилище!", "Успех",
             MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        Log.Information("Добавлена компания {CompanyName} с типом коллекции {CollectionType}",
+        
+        Log.Information("Добавлена компания {CompanyName} с типом коллекции {CollectionType}", 
             textBoxCompanyName.Text, collectionType);
     }
 
@@ -267,7 +278,7 @@ public partial class FormCompany : Form
 
             MessageBox.Show("Компания удалена!", "Успех",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+            
             Log.Information("Удалена компания {CompanyName}", companyName);
         }
     }
@@ -277,12 +288,16 @@ public partial class FormCompany : Form
     {
         if (listBoxCompanies.SelectedItem is null) return;
 
-        string companyName = listBoxCompanies.SelectedItem.ToString();
-        _company = _storageCompanies[companyName];
+        string selectedItem = listBoxCompanies.SelectedItem.ToString();
+
+        // Извлекаем имя компании (всё, что до " - ")
+        string companyName = selectedItem.Split(new[] { " - " }, StringSplitOptions.None)[0];
+
+        _company = _storageCompanies.GetCompany(companyName);
 
         if (_company is null)
         {
-            MessageBox.Show("Не удалось получить компанию!", "Ошибка",
+            MessageBox.Show($"Не удалось получить компанию! Имя: {companyName}", "Ошибка",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
@@ -299,7 +314,7 @@ public partial class FormCompany : Form
             try
             {
                 _storageCompanies.SaveData(saveFileDialog.FileName);
-                MessageBox.Show("Сохранение прошло успешно!", "Результат",
+                MessageBox.Show("Сохранение прошло успешно!", "Результат", 
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Log.Information("Данные сохранены в файл {FileName}", saveFileDialog.FileName);
             }
@@ -331,9 +346,9 @@ public partial class FormCompany : Form
         {
             try
             {
-                _storageCompanies.LoadData(openFileDialog.FileName,
+                _storageCompanies.LoadData(openFileDialog.FileName, 
                     pictureBoxField.Width, pictureBoxField.Height);
-                MessageBox.Show("Загрузка прошла успешно!", "Результат",
+                MessageBox.Show("Загрузка прошла успешно!", "Результат", 
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 RefreshCompanyList();
                 _company = null;
@@ -364,6 +379,70 @@ public partial class FormCompany : Form
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log.Error(ex, "Неизвестная ошибка при загрузке из файла {FileName}", openFileDialog.FileName);
             }
+        }
+    }
+
+    // Сортировка по типу
+    private void ButtonSortByType_Click(object sender, EventArgs e)
+    {
+        if (_company is null)
+        {
+            MessageBox.Show("Сначала выберите компанию!", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+        
+        try
+        {
+            _company.SortCollection(new DrawingBoatCompareByType());
+            RefreshDisplay();
+            Log.Information("Выполнена сортировка по типу");
+            MessageBox.Show("Сортировка по типу выполнена!", "Успех",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (NotSupportedException ex)
+        {
+            MessageBox.Show(ex.Message, "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Log.Warning(ex, "Сортировка недоступна для данного типа коллекции");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ошибка при сортировке: {ex.Message}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Error(ex, "Ошибка при сортировке по типу");
+        }
+    }
+
+    // Сортировка по цвету
+    private void ButtonSortByColor_Click(object sender, EventArgs e)
+    {
+        if (_company is null)
+        {
+            MessageBox.Show("Сначала выберите компанию!", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+        
+        try
+        {
+            _company.SortCollection(new DrawingBoatCompareByColor());
+            RefreshDisplay();
+            Log.Information("Выполнена сортировка по цвету");
+            MessageBox.Show("Сортировка по цвету выполнена!", "Успех",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (NotSupportedException ex)
+        {
+            MessageBox.Show(ex.Message, "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Log.Warning(ex, "Сортировка недоступна для данного типа коллекции");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ошибка при сортировке: {ex.Message}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log.Error(ex, "Ошибка при сортировке по цвету");
         }
     }
 }

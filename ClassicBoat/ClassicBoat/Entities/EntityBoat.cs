@@ -1,9 +1,10 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace ClassicBoat;
 
 // Класс-сущность "Лодка / Парусник"
-public class EntityBoat
+public class EntityBoat : ICloneable
 {
     public int Speed { get; private set; }
     public double Weight { get; private set; }
@@ -29,5 +30,11 @@ public class EntityBoat
     public virtual string[] GetStringRepresentation()
     {
         return [nameof(EntityBoat), Speed.ToString(), Weight.ToString(), BodyColor.Name];
+    }
+
+    // Поверхностное клонирование
+    public object Clone()
+    {
+        return MemberwiseClone();
     }
 }

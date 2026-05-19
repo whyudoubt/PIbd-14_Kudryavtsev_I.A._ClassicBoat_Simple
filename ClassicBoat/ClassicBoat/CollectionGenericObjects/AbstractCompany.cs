@@ -113,4 +113,14 @@ public abstract class AbstractCompany
 
     // Получение имени типа класса-наследника
     protected abstract string GetChildTypeName();
+
+    // Сортировка коллекции
+    public void SortCollection(IComparer<DrawingBoat?> comparer)
+    {
+        if (comparer is null)
+        {
+            throw new ArgumentNullException(nameof(comparer));
+        }
+        _collection.CollectionSort(comparer);
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace ClassicBoat.Entities;
 
@@ -26,8 +27,13 @@ public class EntityImprovedBoat : EntityBoat
     public override string[] GetStringRepresentation()
     {
         string[] baseData = base.GetStringRepresentation();
-        // baseData = [EntityBoat, speed, weight, bodyColor]
         return [nameof(EntityImprovedBoat), baseData[1], baseData[2], baseData[3],
                 AdditionalColor.Name, HasSail.ToString()];
+    }
+
+    // Поверхностное клонирование
+    public new object Clone()
+    {
+        return MemberwiseClone();
     }
 }
