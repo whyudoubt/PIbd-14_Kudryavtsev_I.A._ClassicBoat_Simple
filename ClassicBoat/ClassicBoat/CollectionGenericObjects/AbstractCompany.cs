@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using ClassicBoat.Drawings;
+using ClassicBoat.Helpers;
 
 namespace ClassicBoat.CollectionGenericObjects;
 
@@ -45,7 +47,7 @@ public abstract class AbstractCompany
         int maxCount = _collection.CountObjects;
         if (maxCount == 0) return null;
 
-        var indices = new System.Collections.Generic.List<int>();
+        var indices = new List<int>();
         for (int i = 0; i < _collection.MaxCount; i++)
         {
             if (_collection.GetObject(i) is not null)
@@ -90,4 +92,25 @@ public abstract class AbstractCompany
 
         return (x, y);
     }
+
+    // Получение данных в виде строки для сохранения
+    public string GetDataAsString()
+    {
+        List<string> items = [];
+        foreach (DrawingBoat item in _collection.GetItems())
+        {
+            if (item is null)
+            {
+                continue;
+            }
+            items.Add(item.ToString() ?? string.Empty);
+        }
+
+        List<string> data = [GetChildTypeName(), _collection.CollectionType.ToString(),
+            string.Join(SeparatorConstants.SeparatorForItems, items)];
+        return string.Join(SeparatorConstants.SeparatorForCompanyData, data);
+    }
+
+    // Получение имени типа класса-наследника
+    protected abstract string GetChildTypeName();
 }

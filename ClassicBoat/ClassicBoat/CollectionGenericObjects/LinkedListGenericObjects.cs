@@ -19,7 +19,6 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
             if (value > 0)
             {
                 _maxCount = value;
-                // Если текущее количество превышает новый лимит, обрезаем
                 while (_collection.Count > _maxCount)
                 {
                     _collection.RemoveLast();
@@ -27,6 +26,8 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
             }
         }
     }
+
+    public CollectionType CollectionType => CollectionType.LinkedList;
 
     public LinkedListGenericObjects()
     {
@@ -106,5 +107,13 @@ public class LinkedListGenericObjects<T> : ICollectionGenericObjects<T> where T 
         }
 
         return false;
+    }
+
+    public IEnumerable<T> GetItems()
+    {
+        foreach (var item in _collection)
+        {
+            yield return item;
+        }
     }
 }

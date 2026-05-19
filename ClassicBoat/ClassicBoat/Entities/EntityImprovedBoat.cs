@@ -21,4 +21,13 @@ public class EntityImprovedBoat : EntityBoat
     {
         AdditionalColor = newColor;
     }
+
+    // Переопределение метода получения строк с данными
+    public override string[] GetStringRepresentation()
+    {
+        string[] baseData = base.GetStringRepresentation();
+        // baseData = [EntityBoat, speed, weight, bodyColor]
+        return [nameof(EntityImprovedBoat), baseData[1], baseData[2], baseData[3],
+                AdditionalColor.Name, HasSail.ToString()];
+    }
 }

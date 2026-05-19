@@ -12,6 +12,8 @@ public class HarborCompany : AbstractCompany
     {
     }
 
+    protected override string GetChildTypeName() => nameof(HarborCompany);
+
     protected override void DrawBackground(Graphics g)
     {
         g.Clear(Color.LightBlue);
@@ -44,13 +46,10 @@ public class HarborCompany : AbstractCompany
             {
                 var (x, y) = GetPositionByIndex(i);
 
-                // Выравнивание по левому нижнему углу
                 int drawX = x + 2;
-
                 int drawY = y + (_placeSizeHeight - boat.BoatHeight);
 
                 boat.SetPosition(drawX, drawY);
-
                 boat.DrawTransport(g);
             }
         }

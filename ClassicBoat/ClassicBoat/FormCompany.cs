@@ -242,4 +242,44 @@ public partial class FormCompany : Form
 
         RefreshDisplay();
     }
+
+    // Обработка нажатия "Сохранить"
+    private void SaveMenuItem_Click(object sender, EventArgs e)
+    {
+        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            if (_storageCompanies.SaveData(saveFileDialog.FileName))
+            {
+                MessageBox.Show("Сохранение прошло успешно!", "Результат",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Не удалось сохранить данные!", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+
+    // Обработка нажатия "Загрузить"
+    private void LoadMenuItem_Click(object sender, EventArgs e)
+    {
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            if (_storageCompanies.LoadData(openFileDialog.FileName,
+                pictureBoxField.Width, pictureBoxField.Height))
+            {
+                MessageBox.Show("Загрузка прошла успешно!", "Результат",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                RefreshCompanyList();
+                _company = null;
+                RefreshDisplay();
+            }
+            else
+            {
+                MessageBox.Show("Не удалось загрузить данные!", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
 }

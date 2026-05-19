@@ -1,4 +1,6 @@
-﻿namespace ClassicBoat.CollectionGenericObjects;
+﻿using System.Collections.Generic;
+
+namespace ClassicBoat.CollectionGenericObjects;
 
 // Интерфейс описания действий для набора хранимых объектов
 public interface ICollectionGenericObjects<T> where T : class
@@ -8,6 +10,9 @@ public interface ICollectionGenericObjects<T> where T : class
 
     // Установка максимального количества элементов (и получение)
     int MaxCount { get; set; }
+
+    // Получение типа коллекции
+    CollectionType CollectionType { get; }
 
     // Получение объекта по позиции
     T? GetObject(int position);
@@ -20,4 +25,7 @@ public interface ICollectionGenericObjects<T> where T : class
 
     // Удаление объекта из коллекции с конкретной позиции
     bool RemoveObject(int position);
+
+    // Получение объектов коллекции по одному
+    IEnumerable<T> GetItems();
 }

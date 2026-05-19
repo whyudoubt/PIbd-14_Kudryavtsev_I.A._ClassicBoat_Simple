@@ -26,6 +26,26 @@ public class DrawingImprovedBoat : DrawingBoat
         }
     }
 
+    // Получить текущий цвет паруса
+    public Color GetAdditionalColor()
+    {
+        if (_entityBoat is EntityImprovedBoat improvedBoat)
+        {
+            return improvedBoat.AdditionalColor;
+        }
+        return Color.Gray;
+    }
+
+    // Получить наличие паруса
+    public bool GetHasSail()
+    {
+        if (_entityBoat is EntityImprovedBoat improvedBoat)
+        {
+            return improvedBoat.HasSail;
+        }
+        return false;
+    }
+
     public override void DrawTransport(Graphics g)
     {
         if (_entityBoat is null || _entityBoat is not EntityImprovedBoat improvedBoat ||
@@ -56,25 +76,5 @@ public class DrawingImprovedBoat : DrawingBoat
 
             g.FillEllipse(Brushes.Brown, x + 47, y + 17, 6, 6);
         }
-    }
-
-    // Получить текущий цвет паруса
-    public Color GetAdditionalColor()
-    {
-        if (_entityBoat is EntityImprovedBoat improvedBoat)
-        {
-            return improvedBoat.AdditionalColor;
-        }
-        return Color.Gray;
-    }
-
-    // Получить наличие паруса
-    public bool GetHasSail()
-    {
-        if (_entityBoat is EntityImprovedBoat improvedBoat)
-        {
-            return improvedBoat.HasSail;
-        }
-        return false;
     }
 }

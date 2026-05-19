@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ClassicBoat.CollectionGenericObjects;
 
@@ -32,7 +33,8 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
         }
     }
 
-    // Конструктор
+    public CollectionType CollectionType => CollectionType.Massive;
+
     public MassiveGenericObjects()
     {
         _collection = Array.Empty<T?>();
@@ -102,5 +104,17 @@ public class MassiveGenericObjects<T> : ICollectionGenericObjects<T> where T : c
 
         _collection[position] = null;
         return true;
+    }
+
+    public IEnumerable<T> GetItems()
+    {
+        for (int i = 0; i < _collection.Length; i++)
+        {
+            if (_collection[i] is null)
+            {
+                continue;
+            }
+            yield return _collection[i]!;
+        }
     }
 }
