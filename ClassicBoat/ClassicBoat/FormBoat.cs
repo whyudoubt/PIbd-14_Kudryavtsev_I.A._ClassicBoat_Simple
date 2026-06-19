@@ -12,6 +12,7 @@ public partial class FormBoat : Form
     private DirectionType _checkBordersState;
     private BaseTemplateMovement? _templateMovement;
 
+    // Конструктор формы, инициализирует компоненты и создает объект для работы с полем
     public FormBoat()
     {
         InitializeComponent();
@@ -20,6 +21,7 @@ public partial class FormBoat : Form
         _templateMovement = null;
     }
 
+    // Событие загрузки формы, устанавливает размеры поля и заполняет выпадающий список целями перемещения
     private void FormBoat_Load(object sender, EventArgs e)
     {
         if (pictureBoxField.Width > 0 && pictureBoxField.Height > 0)
@@ -32,6 +34,7 @@ public partial class FormBoat : Form
         comboBoxDestination.Items.Add("В правый нижний угол");
     }
 
+    // Отрисовка текущего состояния лодки на поле
     private void Draw()
     {
         var image = _canvas.DrawCanvas();
@@ -39,7 +42,7 @@ public partial class FormBoat : Form
             pictureBoxField.Image = image;
     }
 
-    // Создание простой лодки
+    // Создание простой лодки со случайными характеристиками
     private void ButtonCreate_Click(object sender, EventArgs e)
     {
         Random random = new Random();
@@ -67,7 +70,7 @@ public partial class FormBoat : Form
         }
     }
 
-    // Создание продвинутой лодки
+    // Создание продвинутой лодки с парусом, характеристики задаются случайно
     private void ButtonCreateImproved_Click(object sender, EventArgs e)
     {
         Random random = new Random();
@@ -98,7 +101,7 @@ public partial class FormBoat : Form
         }
     }
 
-
+    // Обработка нажатия кнопок управления (вверх, вниз, влево, вправо)
     private void ButtonMove_Click(object sender, EventArgs e)
     {
         string name = ((Button)sender)?.Name ?? string.Empty;
@@ -118,6 +121,7 @@ public partial class FormBoat : Form
         }
     }
 
+    // Проверка границ поля, лодка не должна выходить за пределы видимой области
     private void ButtonCheckBorders_Click(object sender, EventArgs e)
     {
         Random random = new Random();
@@ -145,6 +149,7 @@ public partial class FormBoat : Form
         Draw();
     }
 
+    // Выбор цели перемещения из выпадающего списка
     private void ComboBoxDestination_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (_canvas.DrawingBoat is null) return;
@@ -163,6 +168,7 @@ public partial class FormBoat : Form
         comboBoxDestination.Enabled = false;
     }
 
+    // Выполнение одного шага перемещения к выбранной цели
     private void ButtonStep_Click(object sender, EventArgs e)
     {
         if (_templateMovement is null) return;
@@ -179,6 +185,7 @@ public partial class FormBoat : Form
         Draw();
     }
 
+    // Метод для получения лодки из внешнего источника (из гавани)
     public void SetDrawingBoat(DrawingBoat boat)
     {
         if (boat is null)
@@ -215,7 +222,6 @@ public partial class FormBoat : Form
             comboBoxDestination.SelectedIndex = -1;
             _templateMovement = null;
 
-            // Определяем тип лодки
             if (boat is DrawingImprovedBoat)
             {
                 comboBoxDestination.Enabled = true;
